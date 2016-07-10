@@ -1,10 +1,12 @@
 from itertools import product
-from data import data_y
-from string import ascii_lowercase
+from collections import defaultdict
+from data import data_y, data_x
+from math import log
+import string
 import numpy as np
 
 # using ascii lowercase alphabet
-ALPHA = ascii_lowercase
+ALPHA = string.ascii_letters
 ALPHA_LEN = len(ALPHA)
 
 # find all occurrences `needle` in `haystack`
@@ -23,10 +25,16 @@ def represent_data(data_y):
     representer = lambda y: ALPHA[int(np.round(((y - y_min) / y_max) * ALPHA_LEN))]
     return ''.join(map(representer, data_y)), ALPHA
 
+def represent_values(string, data_y):
+    y_min, y_max = min(data_y), max(data_y)
+    for item in string:
+        yield (string.find(item) * y_max) / ALPHA_LEN + y_min
+
+
 def calc_freq(data_str, alphabet):
-    alphabet_dict = {}
-    result_freq = {}
-    dict_freq = {}
+    alphabet_dict = defaultdict(lambda:0)
+    result_freq = defaultdict(lambda:0)
+    dict_freq = defaultdict(lambda:0)
     # calc p(a) ... p(z) freq
     for item in data_str:
         if alphabet_dict.get(item):
@@ -38,39 +46,42 @@ def calc_freq(data_str, alphabet):
     # calc p(a|a), p(a|b), ..., p(b|a), ... freq
     for a, b in product(alphabet, repeat=2):
         # not sure in normalization parameter ( / len(data_str) )
-        dict_freq[a + '|' + b] = count_overlapping_substrings(data_str, a + b) / len(data_str)
+        count = count_overlapping_substrings(data_str, a + b) / len(data_str)
+        if count > 0:
+            dict_freq[a, b] = count
     return result_freq, dict_freq
 
+def classify(classifier, feats):
+    classes, prob = classifier
+    return min(classes.keys(),              # calculate argmin(-log(C|O))
+        key = lambda cl: -log(classes[cl]) + \
+            sum(-log(prob.get((cl, feat), 10**(-7))) for feat in feats))
 
 if __name__ == '__main__':
     # select scanning window size
     window_size = 5
     res_str, alphabet = represent_data(data_y)
-    symb_freq, comb_freq = calc_freq(res_str, alphabet)
+    classifier = calc_freq(res_str, alphabet)
     print('Represent string = `{}`'.format(res_str))
     # compute freq for all scanning windows
-    for start in range(0, len(res_str) - window_size):
+    # for start in range(0, len(res_str) - window_size):
+    #     window = res_str[start:start + window_size]
+    #     for left in ALPHA:
+    #         p = 1.0
+    #         # compute value p(left|window)
+    #         for right in window:
+    #             p *= comb_freq[left, right]
+    #         if p != 0:
+    #             comb_freq[left, window] = p
+    print('Classificate:')
+    for start in range(0, len(res_str) - window_size, 4):
         window = res_str[start:start + window_size]
-        for left in ALPHA:
-            p = 1.0
-            # compute value p(left|window)
-            for right in window:
-                p *= comb_freq[left + '|' + right]
-            if p != 0:
-                comb_freq[left + '|' + window] = p
-    with open('calculated-freq.json', 'w') as f:
-        from json import dump
-        dump_data = {
-            'represent-string': res_str,
-            'alphabet': alphabet,
-            'symbol-freq': symb_freq, 
-            'combination-freq': comb_freq
-        }
-        dump(dump_data, f)
-    freq_list = list(comb_freq.items())
+        res = classify(classifier, window)
+        print('`{}` --> `{}`'.format(window, res))
+    freq_list = list(classifier[1].items())
     freq_list.sort(key=lambda x: -x[1])
     print('Frequency list sorted in descending order:')
     max_field_size = int(np.round(np.log10(len(freq_list))))
-    for i, item in enumerate(freq_list):
+    for i, item in enumerate(freq_list[:20]):
         if item[1] != 0:
             print('{index:>{max}}. p({symb}) = {value:.4e}'.format(index=i, symb=item[0], value=item[1], max=max_field_size))
