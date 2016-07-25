@@ -32,20 +32,17 @@ def represent_values(string, data_y):
 
 
 def calc_freq(data_str, alphabet):
-    alphabet_dict = defaultdict(lambda:0)
-    result_freq = defaultdict(lambda:0)
-    dict_freq = defaultdict(lambda:0)
+    alphabet_dict = defaultdict(int)
+    result_freq = defaultdict(float)
+    dict_freq = defaultdict(float)
     # calc p(a) ... p(z) freq
     for item in data_str:
-        if alphabet_dict.get(item):
-            alphabet_dict[item] += 1
-        else:
-            alphabet_dict[item] = 1 
+        alphabet_dict[item] += 1
     for k, v in alphabet_dict.items():
         result_freq[k] = v / len(data_str)
     # calc p(a|a), p(a|b), ..., p(b|a), ... freq
     for a, b in product(alphabet, repeat=2):
-        # not sure in normalization parameter ( / len(data_str) )
+        # normalization parameter ( / len(data_str) )
         count = count_overlapping_substrings(data_str, a + b) / len(data_str)
         if count > 0:
             dict_freq[a, b] = count
