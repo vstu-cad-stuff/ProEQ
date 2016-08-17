@@ -5,9 +5,7 @@ from math import log
 import string
 import numpy as np
 
-# using ascii lowercase alphabet
-ALPHA = string.ascii_letters
-ALPHA_LEN = len(ALPHA)
+alphabet = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
 
 # find all occurrences `needle` in `haystack`
 def count_overlapping_substrings(haystack, needle):
@@ -19,11 +17,17 @@ def count_overlapping_substrings(haystack, needle):
             return count
         count += 1
 
-def represent_data(data_y):
+def represent_data(data, n_s=len(alphabet)):
+    if len(alphabet) < n_s:
+        raise('Length of alphabet is smaller that n_s')
+    ALPHA = alphabet[:n_s]
+    ALPHA_LEN = len(ALPHA) - 1
     y_min, y_max = min(data_y), max(data_y)
-    # normalize the input value and the present as a symbol
-    representer = lambda y: ALPHA[int(np.round(((y - y_min) / y_max) * ALPHA_LEN))]
+    y_delta = y_max - y_min
+    # normalize input data and present as symbol string
+    representer = lambda y: ALPHA[int(np.round(((y - y_min) / y_delta) * ALPHA_LEN))]
     return ''.join(map(representer, data_y)), ALPHA
+
 
 def represent_values(string, data_y):
     y_min, y_max = min(data_y), max(data_y)
