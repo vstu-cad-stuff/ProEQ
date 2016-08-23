@@ -1,40 +1,37 @@
-from main import count_overlapping_substrings
 from nltk import NaiveBayesClassifier, FreqDist
+from tools import mean_absolute_error, count_overlapping_substrings
 from collections import defaultdict
 from itertools import product
-from data import data_y
+from data import data
 import numpy as np
 import string
-import matplotlib.pyplot as plt
 
 class Representer:
     ALPHABET = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
     ALPHABET_LEN = len(ALPHABET)
 
-    def __init__(self, data, n_w, n_s=ALPHABET_LEN):
+    def __init__(self, n_w, *, n_s=ALPHABET_LEN, dmin=None, dmax=None):
         if self.ALPHABET_LEN < n_s:
             raise('Length of alphabet is smaller that n_s')
-        self.data = data
+        self.dmin, self.dmax = dmin, dmax
         self.alphabet = self.ALPHABET[:n_s]
         self.alpha_len = len(self.alphabet) - 1
-        self.result_string = self.represent(data)
-        self.calculate_frequence(n_w)
+        self.n_w = n_w
 
-    def __iadd__(self, new_data):
-        if type(new_data) not in (list, tuple):
-            raise('Type is not supported')
-        self.result_string += self.represent(new_data)
-        self.calculate_frequence(self.n_w)
-
-    def represent(self, data):
-        self.data += data
-        self.dmin, self.dmax = min(self.data), max(self.data)
+    def _represent(self, data):
+        if not self.dmin:
+            self.dmin = min(data)
+        if not self.dmax:
+            self.dmax = max(data)
         self.ddelta = self.dmax - self.dmin
         self.dstep = self.ddelta / self.alpha_len
         # normalize input data and present as symbol string
         self.representer = lambda d: \
             self.alphabet[int(np.round(((d - self.dmin) / self.ddelta) * self.alpha_len))]
-        return ''.join(map(self.representer, self.data))
+        return ''.join(map(self.representer, data))
+
+    def represent(self, data):
+        return ''.join(map(self.representer, data))
 
     def revert(self, string):
         for item in string:
@@ -46,8 +43,8 @@ class Representer:
             result[item] = self.labels[item]
         return (result, x)
 
-    def calculate_frequence(self, n_w):
-        self.n_w = n_w
+    def train(self, data):
+        self.result_string = self._represent(data)
         self.labels = defaultdict(int)
         result_string_len = len(self.result_string)
         self.labels = FreqDist(self.result_string)
@@ -58,42 +55,39 @@ class Representer:
             train.append(self._gen_feature(window, x_key))
         self.classifier = NaiveBayesClassifier.train(train)
 
+    def test(self, v_true, v_pred):
+        hits = 0
+        for true, pred in zip(v_true, v_pred):
+            if true == pred:
+                hits += 1
+        return (hits / len(v_true)) * 100
+
     def classify(self, sample):
         result = defaultdict(int)
         for item in sample:
             result[item] = self.labels[item]
         return self.classifier.classify(result)
 
-def plot_bar(rep, name):
-    data, bins, bins2, labels = [[] for _ in range(4)]
-    for index, (label, item) in enumerate(sorted(rep.labels.items(), key=lambda x: x[0])):
-        data.append(rep.labels.freq(label))
-        labels.append(label)
-        bins.append(index)
-        bins2.append(index + 0.4)
-    ax = plt.subplot(111)
-    ax.bar(bins, data)
-    ax.set_xticks(bins2)
-    ax.set_xticklabels(labels)
-    ax.grid()
-    plt.xlim(min(bins), max(bins)+1)
-    plt.savefig(name)
-
 if __name__ == '__main__':
     # our parameters
     # n_s -- alphabet length
     # n_w -- window size
-    n_s, n_w = 26, 2
-    rep = Representer(data_y, n_w, n_s)
-    res_len = len(rep.result_string)
-    for window_size in range(n_w, res_len - 1):
-        rep.calculate_frequence(window_size)
-        M_n = 0
-        n = 0
-        for start in range(0, res_len - window_size, window_size - 1):
-            window = rep.result_string[start:start + n_w]
-            key = tuple(rep.revert(rep.result_string[start + n_w] + rep.classify(window)))
-            M_n += abs((key[0] - key[1]) / key[0])
-            n += 1
-        M = M_n / n
-        print('window = {:4}; MAPE = {:.2f}%'.format(window_size, M * 100))
+    n_s, n_w = 52, 20
+    dmin, dmax = min(data), max(data)
+    train_data, test_data = data[:96], data[96:96 + 7 * 96]
+    classifier = Representer(n_w, n_s=n_s, dmin=dmin, dmax=dmax)
+    classifier.train(train_data)
+    test_repr = classifier.represent(test_data)
+    v_true, v_pred, l_true, l_pred = [[] for _ in range(4)]
+    for x in range(len(test_repr) - 1):
+        k_true = test_repr[x + 1]
+        k_pred = classifier.classify(test_repr[x])
+        key = tuple(classifier.revert(k_true + k_pred))
+        l_true.append(k_true)
+        l_pred.append(k_pred)
+        # for fix 'division by zero'
+        v_true.append(key[0] + 1.0)
+        v_pred.append(key[1] + 1.0)
+    print('alphabet = {:2}; window = {:2}; MAPE = {:6.2f}%; hits = {:6.2f}%'.format(
+        n_s, n_w, mean_absolute_error(v_true, v_pred), classifier.test(l_true, l_pred)
+    ))
