@@ -38,7 +38,7 @@ class Representer:
 
     def revert(self, string):
         for item in string:
-            yield string.find(item) * self.dstep + self.dmin
+            yield self.alphabet.find(item) * self.dstep + self.dmin
 
     def _gen_feature(self, window, x):
         result = defaultdict(int)
