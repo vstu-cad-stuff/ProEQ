@@ -52,7 +52,7 @@ class Representer:
 
     def revert(self, string):
         for item in string:
-            yield string.find(item) * self.dstep + self.dmin
+            yield self.alphabet.find(item) * self.dstep + self.dmin
 
     def calculate_frequence(self, n_w, *, product_rep=2):
         self.n_w = n_w
