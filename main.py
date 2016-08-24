@@ -1,7 +1,7 @@
-from tools import mean_absolute_error, count_overlapping_substrings
 from collections import defaultdict
 from data import data
 from itertools import product
+import tools as tl
 import numpy as np
 import string
 
@@ -51,7 +51,7 @@ class Representer:
         # calc p(a|a), p(a|b), ..., p(b|a), ... freq
         for item in product(self.alphabet, repeat=product_rep):
             # normalization parameter ( result_string length )
-            freq = count_overlapping_substrings(self.result_string, ''.join(item)) / result_string_len 
+            freq = tl.count_overlapping_substrings(self.result_string, ''.join(item)) / result_string_len 
             self.dict_freq[item] = freq if freq > self.PROB_MIN else self.PROB_MIN
         for start in range(0, result_string_len - n_w):
             window = self.result_string[start:start + n_w]
@@ -95,6 +95,7 @@ if __name__ == '__main__':
         # for fix 'division by zero'
         v_true.append(key[0] + 1.0)
         v_pred.append(key[1] + 1.0)
-    print('alphabet = {:2}; window = {:2}; MAPE = {:6.2f}%; hits = {:6.2f}%'.format(
-        n_s, n_w, mean_absolute_error(v_true, v_pred), classifier.test(l_true, l_pred)
+    print('alphabet = {:2}; window = {:2}; hits = {:6.2f}%'.format(n_s, n_w, classifier.test(l_true, l_pred)))
+    print('MAPE = {:6.2f}%; MAE = {:6.2f}; MSE = {:6.2f}; RMSE = {:6.2f}; ME = {:6.2f}; SD = {:6.2f}'.format(
+        *tl.calculate_errors(v_true, v_pred)
     ))

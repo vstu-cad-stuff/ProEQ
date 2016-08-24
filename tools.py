@@ -16,7 +16,13 @@ def draw_bar(min, max, current, *, size=50):
     percent = '{:3}%'.format(round(((current - min) * norm) * (100 / size)))
     print('progress: ' + bar + percent + '\r', end='')
 
-def mean_absolute_error(v_true, v_pred):
+def calculate_errors(v_true, v_pred):
     y_true = np.asarray(v_true)
     y_pred = np.asarray(v_pred)
-    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    mape = np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+    mae = np.mean(np.abs(y_true - y_pred))
+    mse = np.mean(np.power(y_true - y_pred, 2))
+    rmse = np.sqrt(mse)
+    me = np.mean(y_true - y_pred)
+    sd = np.sqrt(np.mean(np.power(y_pred - me, 2)))
+    return mape, mae, mse, rmse, me, sd
