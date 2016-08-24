@@ -13,7 +13,7 @@ def count_overlapping_substrings(haystack, needle):
 def draw_bar(min, max, current, *, size=50):
     norm = size / (max - min)
     bar = '#' * round((current - min) * norm) + '_' * round(size - (current - min) * norm)
-    percent = '{:3}%'.format(round(((current - min) * norm) * (100 / size)))
+    percent = '{:4}%'.format(round(((current - min) * norm) * (100 / size)))
     print('progress: ' + bar + percent + '\r', end='')
 
 def calculate_errors(v_true, v_pred):
