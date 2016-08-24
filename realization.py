@@ -89,27 +89,28 @@ def select_train_data(data, *, window=96, feature_size=None):
 
 if __name__ == '__main__':
     # skip 31 days and take 1 train and 7 testing days
-    data = data[31 * 96:39 * 96]
+    data = data[31 * 96:(31 + 8) * 96]
     dmin, dmax = min(data), max(data)
     train_data, test_data = select_train_data(data)
     fp = open('data/nltk-result.csv', 'w')
     # fp = sys.stdout
     fp.write('alphabet;window;hits;MAPE;MAE;MSE;RMSE;ME;SD\n')
-    for n_s in range(8, Representer.ALPHABET_LEN // 3, 2):
-        for n_w in range(3, n_s // 2, 1):
+    for n_s in range(2, Representer.ALPHABET_LEN // 4):
+        for n_w in range(2, n_s - 2, 1):
             classifier = Representer(n_w, n_s=n_s, dmin=dmin, dmax=dmax)
             classifier.train(train_data)
             test_repr = classifier.represent(test_data)
-            v_true, v_pred, l_true, l_pred = [[] for _ in range(4)]
+            v_pred, l_true, l_pred = [[] for _ in range(3)]
+            # for fix 'division by zero' 
+            v_true = list(map(lambda x: x + 1.0, test_data[:-1]))
             for x in range(len(test_repr) - 1):
                 k_true = test_repr[x + 1]
                 k_pred = classifier.classify(test_repr[x])
-                key = tuple(classifier.revert(k_true + k_pred))
+                key = tuple(classifier.revert(k_pred))
                 l_true.append(k_true)
                 l_pred.append(k_pred)
                 # for fix 'division by zero'
-                v_true.append(key[0] + 1.0)
-                v_pred.append(key[1] + 1.0)
+                v_pred.append(key[0] + 1.0)
             with open('data/alph{:02}-wind{:03}.json'.format(n_s, n_w), 'w') as jsf:
                 raw_data = {
                     'label_true': l_true,
