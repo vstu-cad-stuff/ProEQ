@@ -52,9 +52,9 @@ class Representer:
         result_string_len = len(self.result_string)
         self.labels = FreqDist(self.result_string)
         train = []
-        for start in range(0, len(self.result_string) - n_w, n_w - 1):
-            window = self.result_string[start:start + n_w]
-            x_key = self.result_string[start + n_w]
+        for start in range(0, len(self.result_string) - self.n_w, self.n_w - 1):
+            window = self.result_string[start:start + self.n_w]
+            x_key = self.result_string[start + self.n_w]
             train.append(self._gen_feature(window, x_key))
         self.classifier = NaiveBayesClassifier.train(train)
 
