@@ -101,8 +101,8 @@ if __name__ == '__main__':
             classifier.train(train_data)
             test_repr = classifier.represent(test_data)
             v_pred, l_true, l_pred = [[] for _ in range(3)]
-            # for fix 'division by zero' 
-            v_true = list(map(lambda x: x + 1.0, test_data[:-1]))
+            # for fix 'division by zero' & shift true values by one item
+            v_true = list(map(lambda x: x + 1.0, test_data[1:]))
             for x in range(len(test_repr) - 1):
                 k_true = test_repr[x + 1]
                 k_pred = classifier.classify(test_repr[x])
