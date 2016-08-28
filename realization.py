@@ -104,12 +104,6 @@ def compute_naive_bayes(train_data, test_data, n_s, n_w, *, dmin=None, dmax=None
     hits = classifier.test(l_true, l_pred)
     return errors[3]
 
-def select(data, *, step=1):
-    if (data[1] - data[0]) > step:
-        data[0] += step
-        return data[0] - step
-    return None
-
 if __name__ == '__main__':
     # skip 31 days and take 1 train and 7 testing days
     data = data[31 * 96:(31 + 8) * 96]
