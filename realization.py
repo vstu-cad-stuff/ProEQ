@@ -1,5 +1,4 @@
 from nltk import NaiveBayesClassifier, FreqDist
-from itertools import product
 from collections import defaultdict
 from itertools import product
 from data import data
@@ -7,7 +6,6 @@ import tools as tl
 import numpy as np
 import json as js
 import string
-# import sys
 
 class Representer:
     ALPHABET = string.ascii_lowercase + string.ascii_uppercase + string.digits + string.punctuation
@@ -87,41 +85,41 @@ def select_train_data(data, *, window=96, feature_size=None):
     else:
         return train_data, data
 
+def compute_naive_bayes(train_data, test_data, n_s, n_w, *, dmin=None, dmax=None):
+    classifier = Representer(n_w, n_s=n_s, dmin=dmin, dmax=dmax)
+    classifier.train(train_data)
+    test_repr = classifier.represent(test_data)
+    v_pred, l_true, l_pred = [[] for _ in range(3)]
+    # for fix 'division by zero' & shift true values by one item
+    v_true = list(map(lambda x: x + 1.0, test_data[1:]))
+    for x in range(len(test_repr) - 1):
+        k_true = test_repr[x + 1]
+        k_pred = classifier.classify(test_repr[x])
+        key = tuple(classifier.revert(k_pred))
+        l_true.append(k_true)
+        l_pred.append(k_pred)
+        # for fix 'division by zero'
+        v_pred.append(key[0] + 1.0)
+    errors = tl.calculate_errors(v_true, v_pred)
+    hits = classifier.test(l_true, l_pred)
+    return errors[3]
+
 if __name__ == '__main__':
     # skip 31 days and take 1 train and 7 testing days
     data = data[31 * 96:(31 + 8) * 96]
     dmin, dmax = min(data), max(data)
     train_data, test_data = select_train_data(data)
-    fp = open('data/nltk-result.csv', 'w')
-    # fp = sys.stdout
-    fp.write('alphabet;window;hits;MAPE;MAE;MSE;RMSE;ME;SD\n')
-    for n_s in range(2, Representer.ALPHABET_LEN // 4):
-        for n_w in range(2, n_s - 2, 1):
-            classifier = Representer(n_w, n_s=n_s, dmin=dmin, dmax=dmax)
-            classifier.train(train_data)
-            test_repr = classifier.represent(test_data)
-            v_pred, l_true, l_pred = [[] for _ in range(3)]
-            # for fix 'division by zero' & shift true values by one item
-            v_true = list(map(lambda x: x + 1.0, test_data[1:]))
-            for x in range(len(test_repr) - 1):
-                k_true = test_repr[x + 1]
-                k_pred = classifier.classify(test_repr[x])
-                key = tuple(classifier.revert(k_pred))
-                l_true.append(k_true)
-                l_pred.append(k_pred)
-                # for fix 'division by zero'
-                v_pred.append(key[0] + 1.0)
-            with open('data/alph{:02}-wind{:03}.json'.format(n_s, n_w), 'w') as jsf:
-                raw_data = {
-                    'label_true': l_true,
-                    'label_pred': l_pred,
-                    'value_true': v_true,
-                    'value_pred': v_pred
-                }
-                js.dump(raw_data, jsf)
-            errors = tl.calculate_errors(v_true, v_pred)
-            fp.write('{};{};{:.2f}%;{:.2f}%;{:.2f};{:.2f};{:.2f};{:.2f};{:.2f}\n'.format(
-                n_s, n_w, classifier.test(l_true, l_pred), *errors
-            ).replace('.', ','))
-        tl.draw_bar(5, Representer.ALPHABET_LEN, n_s)
-    fp.close()
+    iterations = range(100)
+    alpha_range = (4, Representer.ALPHABET_LEN)
+    window_range = (2, Representer.ALPHABET_LEN)
+    n_s, n_w = alpha_range[0], window_range[0]
+    fit_value = compute_naive_bayes(train_data, test_data, n_s, n_w, dmin=dmin, dmax=dmax)
+    print('[start] alphabet = {}; window = {}; fit function = {:6.2f}'.format(n_s, n_w, fit_value))
+    for iteration in iterations:
+        new_s = np.random.randint(alpha_range[0], alpha_range[1])
+        new_w = window_range[0]
+        new_value = compute_naive_bayes(train_data, test_data, new_s, new_w, dmin=dmin, dmax=dmax)
+        if new_value < fit_value:
+            n_s, n_w, fit_value = new_s, new_w, new_value
+            print('[{}] alphabet = {}; window = {}; fit function = {:6.2f}'.format(iteration, new_s, new_w, new_value))
+    print('[best] alphabet = {}; window = {}; fit function = {:6.2f}'.format(n_s, n_w, fit_value))
