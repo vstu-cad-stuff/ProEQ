@@ -104,22 +104,34 @@ def compute_naive_bayes(train_data, test_data, n_s, n_w, *, dmin=None, dmax=None
     hits = classifier.test(l_true, l_pred)
     return errors[3]
 
+def select(data, *, step=1):
+    if (data[1] - data[0]) > step:
+        data[0] += step
+        return data[0] - step
+    return None
+
 if __name__ == '__main__':
     # skip 31 days and take 1 train and 7 testing days
     data = data[31 * 96:(31 + 8) * 96]
     dmin, dmax = min(data), max(data)
     train_data, test_data = select_train_data(data)
-    iterations = range(100)
     alpha_range = (4, Representer.ALPHABET_LEN)
     window_range = (2, Representer.ALPHABET_LEN)
     n_s, n_w = alpha_range[0], window_range[0]
+    alph_index, wind_index, delta_index = 0, 0, 5
     fit_value = compute_naive_bayes(train_data, test_data, n_s, n_w, dmin=dmin, dmax=dmax)
     print('[start] alphabet = {}; window = {}; fit function = {:6.2f}'.format(n_s, n_w, fit_value))
-    for iteration in iterations:
-        new_s = np.random.randint(alpha_range[0], alpha_range[1])
-        new_w = window_range[0]
-        new_value = compute_naive_bayes(train_data, test_data, new_s, new_w, dmin=dmin, dmax=dmax)
-        if new_value < fit_value:
-            n_s, n_w, fit_value = new_s, new_w, new_value
-            print('[{}] alphabet = {}; window = {}; fit function = {:6.2f}'.format(iteration, new_s, new_w, new_value))
+    for s_index, new_s in enumerate(range(alpha_range[0], alpha_range[1])):
+        for w_index, new_w in enumerate(range(window_range[0], window_range[1])):
+            new_value = compute_naive_bayes(train_data, test_data, new_s, new_w, dmin=dmin, dmax=dmax)
+            if new_value < fit_value:
+                n_s, n_w, fit_value = new_s, new_w, new_value
+                alph_index, wind_index = s_index, w_index
+            elif w_index - wind_index > delta_index:
+                break
+            print('[{}, {}] alphabet = {}; window = {}; fit function = {:6.2f}'.format(
+                s_index, w_index, new_s, new_w, new_value
+            ))
+        if s_index - alph_index > delta_index:
+            break
     print('[best] alphabet = {}; window = {}; fit function = {:6.2f}'.format(n_s, n_w, fit_value))
