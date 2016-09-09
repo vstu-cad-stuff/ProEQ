@@ -34,6 +34,6 @@ if __name__ == '__main__':
         lgd2 = ax[1].legend(('error',), loc='center left', bbox_to_anchor=(1, 0.92), fancybox=True, shadow=True)
         ax[1].set_title('Absolute error')
         ax[1].grid()
-        plt.savefig('data/alph{}-window{}.png'.format(n_s, n_w), bbox_extra_artists=(lgd1, lgd2), bbox_inches='tight')
+        plt.savefig('data/alph{}-window{}.png'.format(n_s, n_w), dpi=300, bbox_extra_artists=(lgd1, lgd2), bbox_inches='tight')
         plt.close()
         draw_bar(0, files_count, index)
