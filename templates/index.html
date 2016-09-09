@@ -1,4 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h1>minimal template of flask app</h1>
+<form enctype="multipart/form-data" method="post">
+ <p>
+   <input type="file" name="file">
+   <input type="submit" value="Загрузить данные">
+ </p>
+</form> 
 {% endblock %}

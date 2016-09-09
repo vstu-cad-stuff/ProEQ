@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+<!-- https://developers.google.com/chart/ -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<div id="curve_chart" style="width: 500px; height: 300px"></div>
+<script type="text/javascript">
+  google.charts.load('current', {'packages':['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+    var jsonData = JSON.parse($.ajax({
+      url: '/analyze?file={{ file }}',
+      dataType: 'json',
+      method: 'post',
+      async: false
+    }).responseText).data;
+
+    var data = new google.visualization.arrayToDataTable(jsonData);
+
+    var options = {
+      title: 'Loaded data',
+      chartArea: { width: '85%', height: '85%' },
+      legend: 'none'
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+    chart.draw(data, options);
+  }
+</script>
+{% endblock %}
