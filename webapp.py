@@ -20,18 +20,30 @@ def analyze(file=None):
             return jsonify({'data': [['x', 'y']] + data})
         return 'File not found', 404
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+@app.route('/load', methods=['GET', 'POST'])
+def load():
     if request.method == 'GET':
-        return render_template('index.html')
+        return render_template('load.html')
     elif request.method == 'POST':
-        up_file = request.files['file']
+        up_file = request.files.get('file')
         if up_file:
             folder = app.config['UPLOAD_FOLDER']
             filename = path.join(folder, secure_filename(up_file.filename))
             up_file.save(filename)
             return redirect(url_for('analyze', file=up_file.filename))
+        elif request.form is not None:
+            username, password = request.form.get('username'), request.form.get('password')
+            print('{}:{}'.format(username, password))
+            return render_template('load.html')
         return 'Something happened', 400
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
