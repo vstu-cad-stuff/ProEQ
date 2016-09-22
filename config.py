@@ -1,3 +1,6 @@
 from os import path
 
-UPLOAD_FOLDER = path.join(path.dirname(__file__), 'upload')
+PROJECT_DIRECTORY = path.dirname(__file__)
+UPLOAD_FOLDER = path.join(PROJECT_DIRECTORY, 'upload')
+SQLALCHEMY_DATABASE_URI = 'sqlite:////' + path.join(PROJECT_DIRECTORY, 'database.db')
+SECRET_KEY = 'pro-eq-secret-project-key'

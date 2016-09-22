@@ -5,6 +5,7 @@ from __init__ import app
 from os import path
 
 @app.route('/analyze', methods=['GET', 'POST'])
+@requires_auth
 def analyze(file=None):
     if request.method == 'GET':
         return render_template('analyze.html', file=request.args['file'])
@@ -21,10 +22,12 @@ def analyze(file=None):
         return 'File not found', 404
 
 @app.route('/dashboard')
+@requires_auth
 def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/load', methods=['GET', 'POST'])
+@requires_auth
 def load():
     if request.method == 'GET':
         return render_template('load.html')
