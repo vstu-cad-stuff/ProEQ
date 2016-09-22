@@ -1,11 +1,14 @@
 from flask import render_template, jsonify, url_for, request, redirect
+from flask_user import login_required, SQLAlchemyAdapter, UserManager
 from werkzeug import secure_filename
+from __init__ import app, db
 from csv import DictReader
-from __init__ import app
+from model import User
 from os import path
 
+
 @app.route('/analyze', methods=['GET', 'POST'])
-@requires_auth
+@login_required
 def analyze(file=None):
     if request.method == 'GET':
         return render_template('analyze.html', file=request.args['file'])
@@ -22,12 +25,12 @@ def analyze(file=None):
         return 'File not found', 404
 
 @app.route('/dashboard')
-@requires_auth
+@login_required
 def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/load', methods=['GET', 'POST'])
-@requires_auth
+@login_required
 def load():
     if request.method == 'GET':
         return render_template('load.html')
@@ -38,10 +41,6 @@ def load():
             filename = path.join(folder, secure_filename(up_file.filename))
             up_file.save(filename)
             return redirect(url_for('analyze', file=up_file.filename))
-        elif request.form is not None:
-            username, password = request.form.get('username'), request.form.get('password')
-            print('{}:{}'.format(username, password))
-            return render_template('load.html')
         return 'Something happened', 400
 
 @app.route('/')
@@ -49,4 +48,6 @@ def index():
     return render_template('index.html')
 
 if __name__ == '__main__':
+    db_adapter = SQLAlchemyAdapter(db, User)
+    user_manager = UserManager(db_adapter, app)
     app.run(debug=True)

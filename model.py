@@ -1,22 +1,21 @@
+from flask_user import UserMixin
 from __init__ import db
-from enum import Enum
 
-
-class UserRole(Enum):
-    USER = 0
-    ADMIN = 1
-
-
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64))
-    password = db.Column(db.String(64))
-    role = db.Column(db.Integer)
+    username = db.Column(db.String(64), nullable=False, unique=True)
+    password = db.Column(db.String(64), nullable=False, server_default='')
+    roles = db.relationship('Role', secondary='user_roles',
+            backref=db.backref('users', lazy='dynamic'))
 
-    def __init__(self, username, password, role=UserRole.USER):
-        self.username = username
-        self.password = password
-        self.role = role.value
+    reset_password_token = db.Column(db.String(100), nullable=False, server_default='')
+    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
 
-    def __repr__(self):
-        return "<User('{}', '{}', {})>".format(self.username, self.password, self.role)
+class Role(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(50), unique=False, server_default='user')
+
+class UserRoles(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
