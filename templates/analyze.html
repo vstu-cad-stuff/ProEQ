@@ -142,7 +142,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <a href="{{ url_for('user.logout') }}"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -150,7 +150,7 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li>
+                    <!-- <li>
                         <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
                     </li>
                     <li>
@@ -184,6 +184,20 @@
                     </li>
                     <li>
                         <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
+                    </li> -->
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dashboard<i class="fa fa-fw fa-caret-down"></i></a>
+                        <ul id="demo" class="collapse">
+                            <li>
+                                <a href="/dashboard">Main page</a>
+                            </li>
+                            <li>
+                                <a href="/dashboard/load">Load data</a>
+                            </li>
+<!--                             <li>
+                                <a href="/dashboard/analyze">Analyze data</a>
+                            </li> -->
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -200,7 +214,7 @@
 
                   function drawChart() {
                     var jsonData = JSON.parse($.ajax({
-                      url: '/dashboard/analyze?file={{ file }}',
+                      url: "/dashboard/analyze?file={{ args['file'] }}",
                       dataType: 'json',
                       method: 'post',
                       async: false

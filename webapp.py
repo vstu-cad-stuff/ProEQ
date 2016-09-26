@@ -15,7 +15,7 @@ def dashboard():
 @login_required
 def dashboard_analyze(file=None):
     if request.method == 'GET':
-        return render_template('analyze.html', file=request.args['file'])
+        return render_template('analyze.html', args={'file': request.args['file']})
     elif request.method == 'POST':
         folder = app.config['UPLOAD_FOLDER']
         filename = path.join(folder, secure_filename(request.args['file']))
