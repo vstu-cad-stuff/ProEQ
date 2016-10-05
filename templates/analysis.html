@@ -16,11 +16,17 @@
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
 
+    <link href="{{ url_for('static', filename='css/analysis.css') }}" rel="stylesheet">
+
     <!-- Custom Fonts -->
     <link href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+        filename_url = "{{ args['file'] }}";
+    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/analysis.js') }}"></script>
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -205,41 +211,63 @@
         </nav>
 
         <div id="page-wrapper">
-
-            <div class="container-fluid">
-                <div id="curve_chart" style="width: 500px; height: 300px"></div>
-                <script type="text/javascript">
-                  google.charts.load('current', {'packages':['corechart']});
-                  google.charts.setOnLoadCallback(drawChart);
-
-                  function drawChart() {
-                    var jsonData = JSON.parse($.ajax({
-                      url: "/dashboard/analyze?file={{ args['file'] }}",
-                      dataType: 'json',
-                      method: 'post',
-                      async: false
-                    }).responseText).data;
-
-                    var data = new google.visualization.arrayToDataTable(jsonData);
-
-                    var options = {
-                      title: 'Loaded data',
-                      chartArea: { width: '85%', height: '85%' },
-                      legend: 'none'
-                    };
-
-                    var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
-                    chart.draw(data, options);
-                  }
-                </script>
-
+            <div class="graphics">
+                <div id="curve_chart"></div>
+                <div id="forecast_chart"></div>
             </div>
-            <!-- /.container-fluid -->
-
+            <div class="elements">
+                <div class="info">
+                    <p class="text">Количество точек</p>
+                    <p class="text">#point_count_label</p>
+                    <p class="text">Отрисованный диапазон</p>
+                    <p class="text">#point_inT_label</p>
+                    <p class="text">Точек в одном периоде</p>
+                    <p class="text">#point_range_label</p>
+                </div>
+                <div class="control">
+                    <div id="train_data">
+                        <p class="text">Обучающая выборка</p>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="начало">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="конец">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default">Обучить модель</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="forecast">
+                        <p class="text">Диапазон для прогнозирования</p>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="начало">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" placeholder="конец">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default">Построить прогноз</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <!-- /#page-wrapper -->
-
     </div>
     <!-- /#wrapper -->
 

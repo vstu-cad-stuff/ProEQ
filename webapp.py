@@ -11,11 +11,11 @@ from os import path
 def dashboard():
     return render_template('dashboard.html')
 
-@app.route('/dashboard/analyze', methods=['GET', 'POST'])
+@app.route('/dashboard/analysis', methods=['GET', 'POST'])
 @login_required
-def dashboard_analyze(file=None):
+def dashboard_analysis(file=None):
     if request.method == 'GET':
-        return render_template('analyze.html', args={'file': request.args['file']})
+        return render_template('analysis.html', args={'file': request.args['file']})
     elif request.method == 'POST':
         folder = app.config['UPLOAD_FOLDER']
         filename = path.join(folder, secure_filename(request.args['file']))
@@ -39,7 +39,7 @@ def dashboard_load():
             folder = app.config['UPLOAD_FOLDER']
             filename = path.join(folder, secure_filename(up_file.filename))
             up_file.save(filename)
-            return redirect(url_for('dashboard_analyze', file=up_file.filename))
+            return redirect(url_for('dashboard_analysis', file=up_file.filename))
 
 @app.route('/')
 def index():
