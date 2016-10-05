@@ -102,7 +102,7 @@ def compute_naive_bayes(train_data, test_data, n_s, n_w, *, dmin=None, dmax=None
         v_pred.append(key[0] + 1.0)
     errors = tl.calculate_errors(v_true, v_pred)
     hits = classifier.test(l_true, l_pred)
-    return errors[3]
+    return errors['mse']
 
 if __name__ == '__main__':
     # skip 31 days and take 1 train and 7 testing days

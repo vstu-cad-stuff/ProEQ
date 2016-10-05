@@ -25,4 +25,4 @@ def calculate_errors(v_true, v_pred):
     rmse = np.sqrt(mse)
     me = np.mean(y_true - y_pred)
     sd = np.sqrt(np.mean(np.power(y_pred - me, 2)))
-    return mape, mae, mse, rmse, me, sd
+    return {'mape': mape, 'mae': mae, 'mse': mse, 'rmse': rmse, 'me': me, 'sd': sd}
