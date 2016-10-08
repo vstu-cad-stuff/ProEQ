@@ -147,45 +147,71 @@
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
+                    <!-- <li>
+                        <a href="index.html"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dashboard<i class="fa fa-fw fa-caret-down"></i></a>
+                        <a href="charts.html"><i class="fa fa-fw fa-bar-chart-o"></i> Charts</a>
+                    </li>
+                    <li>
+                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    </li>
+                    <li>
+                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+                    </li>
+                    <li>
+                        <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
+                    </li>
+                    <li>
+                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
                         <ul id="demo" class="collapse">
                             <li>
-                                <a href="/dashboard">Main page</a>
+                                <a href="#">Dropdown Item</a>
                             </li>
                             <li>
-                                <a href="/dashboard/load">Load data</a>
+                                <a href="#">Dropdown Item</a>
                             </li>
-                            <!-- <li>
-                                <a href="/dashboard/analyze">Analyze data</a>
-                            </li> -->
                         </ul>
                     </li>
-                    <!-- <li class="active">
+                    <li class="active">
                         <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
+                    </li>
+                    <li>
+                        <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
                     </li> -->
+                    <li>
+                        <li>
+                            <a href="/dashboard">Main page</a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/data">Select data</a>
+                        </li>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
         </nav>
 
         <div id="page-wrapper">
-
-            <div class="container-fluid">
-
-                <form enctype="multipart/form-data" method="post">
-                 <p>
-                   <input type="file" name="file">
-                   <input type="submit" value="Загрузить данные">
-                 </p>
-                </form> 
-
-            </div>
-            <!-- /.container-fluid -->
-
+            <p class="text">Загрузить данные</p>
+            <form enctype="multipart/form-data" method="post">
+                <p>
+                    <input type="file" name="file">
+                    <input type="submit" value="Загрузить данные">
+                </p>
+            </form><br>
+            <p class="text">Список доступных файлов:</p>
+            <ul id="data-list">
+            {% for file in args['file_list'] %}
+                <li>
+                    <a href="/dashboard/analysis?file={{ file|safe }}">{{ file|safe }}</a>
+                </li>
+            {% endfor %}
+            </ul>
         </div>
-        <!-- /#page-wrapper -->
-
     </div>
     <!-- /#wrapper -->
 

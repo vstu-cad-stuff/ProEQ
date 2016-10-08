@@ -2,7 +2,7 @@
     width: 500px;
     height: 300px;
     display: inline-block;
-    border: 4px solid black;
+    border: 2px solid black;
 }
 
 #graph_info {
@@ -12,8 +12,24 @@
     width: 200px;
 }
 
+#control-block {
+    display: inline-block;
+    width: 290px;
+}
+
+#button-block {
+    display: inline-block;
+    margin: 8px;
+    width: 180px;
+}
+
 .control, .info {
     vertical-align: top;
     display: inline-block;
     width: 500px;
+}
+
+div.control p, div.info p {
+    margin-top: 5px;
+    margin-bottom: 0px;
 }

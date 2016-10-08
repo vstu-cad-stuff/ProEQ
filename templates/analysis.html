@@ -192,18 +192,12 @@
                         <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
                     </li> -->
                     <li>
-                        <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dashboard<i class="fa fa-fw fa-caret-down"></i></a>
-                        <ul id="demo" class="collapse">
-                            <li>
-                                <a href="/dashboard">Main page</a>
-                            </li>
-                            <li>
-                                <a href="/dashboard/load">Load data</a>
-                            </li>
-<!--                             <li>
-                                <a href="/dashboard/analyze">Analyze data</a>
-                            </li> -->
-                        </ul>
+                        <li>
+                            <a href="/dashboard">Main page</a>
+                        </li>
+                        <li>
+                            <a href="/dashboard/data">Select data</a>
+                        </li>
                     </li>
                 </ul>
             </div>
@@ -217,52 +211,66 @@
             </div>
             <div class="elements">
                 <div class="info">
-                    <p class="text">Количество точек</p>
-                    <p class="text">#point_count_label</p>
+                    <p class="text">Общее количество точек</p>
+                    <p class="text" id="point_count"></p>
                     <p class="text">Отрисованный диапазон</p>
-                    <p class="text">#point_inT_label</p>
+                    <p class="text" id="point_range"></p>
                     <p class="text">Точек в одном периоде</p>
-                    <p class="text">#point_range_label</p>
+                    <p class="text" id="point_period"></p>
                 </div>
                 <div class="control">
-                    <div id="train_data">
+                    <p class="text">Параметры модели прогнозирования</p>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="basic-addon1">размер алфавита</span>
+                                <input type="text" class="form-control" value="26" id="alphabet_len">
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-addon" id="basic-addon1">размер окна</span>
+                                <input type="text" class="form-control" value="2" id="window_len">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="control-block">
                         <p class="text">Обучающая выборка</p>
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="начало">
+                                    <span class="input-group-addon" id="basic-addon1">начало</span>
+                                    <input type="text" class="form-control" value="2976" id="train_start">
                                 </div>
                             </div>
-                            <div class="col-lg-3">
+                            <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="конец">
+                                    <span class="input-group-addon" id="basic-addon1">конец</span>
+                                    <input type="text" class="form-control" value="3072" id="train_end">
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default">Обучить модель</button>
+                        </div>
+                        <p class="text">Диапазон для прогнозирования</p>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-addon" id="basic-addon1">начало</span>
+                                    <input type="text" class="form-control" value="3072" id="forecast_start">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-addon" id="basic-addon1">конец</span>
+                                    <input type="text" class="form-control" value="3744" id="forecast_end">
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="forecast">
-                        <p class="text">Диапазон для прогнозирования</p>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="начало">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="конец">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default">Построить прогноз</button>
-                                </div>
-                            </div>
+                    <div id="button-block">
+                        <div class="btn-group">
+                            <button type="button" onClick="SendData();" class="btn btn-success btn-block btn-lg">
+                                Построить прогноз
+                            </button>
                         </div>
                     </div>
                 </div>
