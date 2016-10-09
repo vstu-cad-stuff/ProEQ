@@ -20,11 +20,11 @@ function drawChart() {
 
   var options = {
     title: 'Загруженные данные',
-    chartArea: { width: '85%', height: '85%' },
+    chartArea: { width: '85%', height: '75%' },
     legend: 'none'
   };
 
-  var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+  var chart = new google.visualization.LineChart(gId('curve_chart'));
 
   chart.draw(data, options);
 }
@@ -34,13 +34,30 @@ function SendData() {
     alphabet_len:   parseInt(gId('alphabet_len').value),
     window_len:     parseInt(gId('window_len').value),
     train_range:    [parseInt(gId('train_start').value), parseInt(gId('train_end').value)],
-    forecast_range: [parseInt(gId('forecast_start').value), parseInt(gId('forecast_end').value)]
+    forecast_range: [parseInt(gId('forecast_start').value), parseInt(gId('forecast_end').value)],
+    // magic for html page
+    filename:       filename_url,
   };
   $.ajax({
     contentType: 'application/json',
     url: '/dashboard/model',
     dataType: 'json',
     type: 'POST',
-    data: JSON.stringify(send_data)
+    data: JSON.stringify(send_data),
+    success: function (data) {
+      console.log(data);
+      var rf_data = google.visualization.arrayToDataTable(data.data);
+      var options = {
+        title: 'Предсказанные данные',
+        chartArea: { width: '85%', height: '75%' },
+        curveType: 'function',
+        // legend: ['none', 'none']
+        legend: { position: 'bottom' }
+      };
+
+      var chart = new google.visualization.LineChart(gId('forecast_chart'));
+
+      chart.draw(rf_data, options);
+    }
   });
 }
