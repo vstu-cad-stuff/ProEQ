@@ -45,13 +45,17 @@ function SendData() {
     type: 'POST',
     data: JSON.stringify(send_data),
     success: function (data) {
-      console.log(data);
+      gId('mape_error').innerHTML = 'MAPE: ' + data.errors.mape.toFixed(2) + ' %';
+      gId('mae_error').innerHTML = 'MAE: ' + data.errors.mae.toFixed(2);
+      gId('mse_error').innerHTML = 'MSE: ' + data.errors.mse.toFixed(2);
+      gId('rmse_error').innerHTML = 'RMSE: ' + data.errors.rmse.toFixed(2);
+      gId('me_error').innerHTML = 'ME: ' + data.errors.me.toFixed(2);
+      gId('sd_error').innerHTML = 'SD: ' + data.errors.sd.toFixed(2);
       var rf_data = google.visualization.arrayToDataTable(data.data);
       var options = {
         title: 'Предсказанные данные',
         chartArea: { width: '85%', height: '75%' },
         curveType: 'function',
-        // legend: ['none', 'none']
         legend: { position: 'bottom' }
       };
 

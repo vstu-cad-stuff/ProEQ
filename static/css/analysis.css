@@ -23,7 +23,13 @@
     width: 180px;
 }
 
-.control, .info {
+.info-static, .info-dynamic {
+    vertical-align: top;
+    display: inline-block;
+    width: 250px;
+}
+
+.control {
     vertical-align: top;
     display: inline-block;
     width: 500px;

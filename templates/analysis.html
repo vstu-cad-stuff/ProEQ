@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin - Bootstrap Admin Template</title>
+    <title>ProEQ data analysis</title>
 
     <!-- Bootstrap Core CSS -->
 
@@ -193,10 +193,11 @@
                     </li> -->
                     <li>
                         <li>
-                            <a href="/dashboard">Main page</a>
+                            <!-- <span class="glyphicon glyphicon-home"></span> -->
+                            <a href="/dashboard"><span class="glyphicon glyphicon-home"></span> Main page</a>
                         </li>
                         <li>
-                            <a href="/dashboard/data">Select data</a>
+                            <a href="/dashboard/data"><span class="glyphicon glyphicon-upload"></span> Select data</a>
                         </li>
                     </li>
                 </ul>
@@ -210,13 +211,22 @@
                 <div id="forecast_chart"></div>
             </div>
             <div class="elements">
-                <div class="info">
+                <div class="info-static">
                     <p class="text">Общее количество точек</p>
                     <p class="text" id="point_count"></p>
                     <p class="text">Отрисованный диапазон</p>
                     <p class="text" id="point_range"></p>
                     <p class="text">Точек в одном периоде</p>
                     <p class="text" id="point_period"></p>
+                </div>
+                <div class="info-dynamic">
+                    <p class="text">Ошибки прогнозирования</p>
+                    <p class="text" id="mape_error">MAPE: </p>
+                    <p class="text" id="mae_error">MAE: </p>
+                    <p class="text" id="mse_error">MSE: </p>
+                    <p class="text" id="rmse_error">RMSE: </p>
+                    <p class="text" id="me_error">ME: </p>
+                    <p class="text" id="sd_error">SD: </p>
                 </div>
                 <div class="control">
                     <p class="text">Параметры модели прогнозирования</p>
@@ -230,7 +240,7 @@
                         <div class="col-lg-6">
                             <div class="input-group input-group-sm">
                                 <span class="input-group-addon" id="basic-addon1">размер окна</span>
-                                <input type="text" class="form-control" value="2" id="window_len">
+                                <input type="text" class="form-control" value="3" id="window_len">
                             </div>
                         </div>
                     </div>
@@ -255,13 +265,13 @@
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-addon" id="basic-addon1">начало</span>
-                                    <input type="text" class="form-control" value="3072" id="forecast_start">
+                                    <input type="text" class="form-control" value="192" id="forecast_start">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-addon" id="basic-addon1">конец</span>
-                                    <input type="text" class="form-control" value="3744" id="forecast_end">
+                                    <input type="text" class="form-control" value="864" id="forecast_end">
                                 </div>
                             </div>
                         </div>
