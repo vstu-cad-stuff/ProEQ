@@ -1,5 +1,6 @@
-google.charts.load('current', {'packages':['corechart']});
-google.charts.setOnLoadCallback(drawChart);
+window.onload = function() {
+  drawChart();
+}
 
 function gId(name) {
   return document.getElementById(name);
@@ -16,17 +17,36 @@ function drawChart() {
   gId('point_count').innerHTML = jsonData.count;
   gId('point_period').innerHTML = jsonData.period;
   gId('point_range').innerHTML = '[' + jsonData.range[0] + ', ' + jsonData.range[1] + ']';
-  var data = new google.visualization.arrayToDataTable(jsonData.data);
-
-  var options = {
-    title: 'Loaded data',
-    chartArea: { width: '85%', height: '75%' },
-    legend: 'none'
-  };
-
-  var chart = new google.visualization.LineChart(gId('curve_chart'));
-
-  chart.draw(data, options);
+  var chart = c3.generate({
+    bindto: '#curve_chart',
+    size: {
+      width: 480,
+      height: 300
+    },
+    data: {
+      x: 'x',
+      rows: jsonData.data,
+      names: {
+        // use custom data from js
+        y: 'power consumption data'
+      }
+    },
+    point: { show: false },
+    axis: {
+      x: {
+        // use custom data from js
+        label: '15 minute intervals',
+        tick: {
+          count: 48,
+          format: function (x) { return Math.round(x); }
+        }
+      },
+      y: {
+        // use custom data from js
+        label: 'power consumption',
+      }
+    }
+  });
 }
 
 function SendData() {
@@ -51,17 +71,37 @@ function SendData() {
       gId('rmse_error').innerHTML = 'RMSE: ' + data.errors.rmse.toFixed(2);
       gId('me_error').innerHTML = 'ME: ' + data.errors.me.toFixed(2);
       gId('sd_error').innerHTML = 'SD: ' + data.errors.sd.toFixed(2);
-      var rf_data = google.visualization.arrayToDataTable(data.data);
-      var options = {
-        title: 'Forecast data',
-        chartArea: { width: '85%', height: '75%' },
-        curveType: 'function',
-        legend: { position: 'bottom' }
-      };
-
-      var chart = new google.visualization.LineChart(gId('forecast_chart'));
-
-      chart.draw(rf_data, options);
+      var chart = c3.generate({
+        bindto: '#forecast_chart',
+        size: {
+          width: 480,
+          height: 300
+        },
+        data: {
+          x: 'x',
+          rows: data.data,
+          names: {
+            // use custom data from js
+            real: 'real power consumption',
+            forecast: 'predict power consumption'
+          }
+        },
+        point: { show: false },
+        axis: {
+          x: {
+            // use custom data from js
+            label: '15 minute intervals',
+            tick: {
+              count: 48,
+              format: function (x) { return Math.round(x); }
+            }
+          },
+          y: {
+            // use custom data from js
+            label: 'power consumption',
+          }
+        }
+      });
     }
   });
 }

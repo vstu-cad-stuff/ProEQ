@@ -10,19 +10,23 @@
     <title>ProEQ data analysis</title>
 
     <!-- Bootstrap Core CSS -->
-
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{{ url_for('static', filename='css/sb-admin.css') }}" rel="stylesheet">
-
     <link href="{{ url_for('static', filename='css/analysis.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/c3.min.css') }}" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <link href="{{ url_for('static', filename='font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/d3.v3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/c3.min.js') }}"></script>
     <script type="text/javascript">
         filename_url = "{{ args['file'] }}";
     </script>
@@ -193,7 +197,6 @@
                     </li> -->
                     <li>
                         <li>
-                            <!-- <span class="glyphicon glyphicon-home"></span> -->
                             <a href="/dashboard"><span class="glyphicon glyphicon-home"></span> Main page</a>
                         </li>
                         <li>
@@ -288,12 +291,5 @@
         </div>
     </div>
     <!-- /#wrapper -->
-
-    <!-- jQuery -->
-    <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-
 </body>
 </html>
