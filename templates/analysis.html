@@ -51,7 +51,7 @@
             </div>
             <!-- Top Menu Items -->
             <ul class="nav navbar-right top-nav">
-                <li class="dropdown">
+                <!-- <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
                     <ul class="dropdown-menu message-dropdown">
                         <li class="message-preview">
@@ -133,11 +133,11 @@
                             <a href="#">View All</a>
                         </li>
                     </ul>
-                </li>
+                </li> -->
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ current_user.username }} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li>
+                        <!-- <li>
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
@@ -146,7 +146,7 @@
                         <li>
                             <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
                         </li>
-                        <li class="divider"></li>
+                        <li class="divider"></li> -->
                         <li>
                             <a href="{{ url_for('user.logout') }}"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
@@ -212,15 +212,15 @@
             </div>
             <div class="elements">
                 <div class="info-static">
-                    <p class="text">Общее количество точек</p>
+                    <p class="text">Total number of points</p>
                     <p class="text" id="point_count"></p>
-                    <p class="text">Отрисованный диапазон</p>
+                    <p class="text">Rendered range</p>
                     <p class="text" id="point_range"></p>
-                    <p class="text">Точек в одном периоде</p>
+                    <p class="text">Points in one period</p>
                     <p class="text" id="point_period"></p>
                 </div>
                 <div class="info-dynamic">
-                    <p class="text">Ошибки прогнозирования</p>
+                    <p class="text">Prediction errors</p>
                     <p class="text" id="mape_error">MAPE: </p>
                     <p class="text" id="mae_error">MAE: </p>
                     <p class="text" id="mse_error">MSE: </p>
@@ -229,48 +229,48 @@
                     <p class="text" id="sd_error">SD: </p>
                 </div>
                 <div class="control">
-                    <p class="text">Параметры модели прогнозирования</p>
+                    <p class="text">Model parameters</p>
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-addon" id="basic-addon1">размер алфавита</span>
+                                <span class="input-group-addon" id="basic-addon1">alphabet length</span>
                                 <input type="text" class="form-control" value="26" id="alphabet_len">
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="input-group input-group-sm">
-                                <span class="input-group-addon" id="basic-addon1">размер окна</span>
+                                <span class="input-group-addon" id="basic-addon1">window length</span>
                                 <input type="text" class="form-control" value="3" id="window_len">
                             </div>
                         </div>
                     </div>
                     <div id="control-block">
-                        <p class="text">Обучающая выборка</p>
+                        <p class="text">Training sample</p>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-addon" id="basic-addon1">начало</span>
+                                    <span class="input-group-addon" id="basic-addon1">start</span>
                                     <input type="text" class="form-control" value="2976" id="train_start">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-addon" id="basic-addon1">конец</span>
+                                    <span class="input-group-addon" id="basic-addon1">end</span>
                                     <input type="text" class="form-control" value="3072" id="train_end">
                                 </div>
                             </div>
                         </div>
-                        <p class="text">Диапазон для прогнозирования</p>
+                        <p class="text">Range for prediction</p>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-addon" id="basic-addon1">начало</span>
+                                    <span class="input-group-addon" id="basic-addon1">start</span>
                                     <input type="text" class="form-control" value="192" id="forecast_start">
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="input-group input-group-sm">
-                                    <span class="input-group-addon" id="basic-addon1">конец</span>
+                                    <span class="input-group-addon" id="basic-addon1">end</span>
                                     <input type="text" class="form-control" value="864" id="forecast_end">
                                 </div>
                             </div>
@@ -279,7 +279,7 @@
                     <div id="button-block">
                         <div class="btn-group">
                             <button type="button" onClick="SendData();" class="btn btn-success btn-block btn-lg">
-                                Построить прогноз
+                                Predict
                             </button>
                         </div>
                     </div>

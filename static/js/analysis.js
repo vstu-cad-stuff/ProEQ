@@ -19,7 +19,7 @@ function drawChart() {
   var data = new google.visualization.arrayToDataTable(jsonData.data);
 
   var options = {
-    title: 'Загруженные данные',
+    title: 'Loaded data',
     chartArea: { width: '85%', height: '75%' },
     legend: 'none'
   };
@@ -53,7 +53,7 @@ function SendData() {
       gId('sd_error').innerHTML = 'SD: ' + data.errors.sd.toFixed(2);
       var rf_data = google.visualization.arrayToDataTable(data.data);
       var options = {
-        title: 'Предсказанные данные',
+        title: 'Forecast data',
         chartArea: { width: '85%', height: '75%' },
         curveType: 'function',
         legend: { position: 'bottom' }

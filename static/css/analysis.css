@@ -14,13 +14,16 @@
 
 #control-block {
     display: inline-block;
-    width: 290px;
+    width: 330px;
 }
 
 #button-block {
     display: inline-block;
-    margin: 8px;
-    width: 180px;
+    margin: 10px;
+}
+
+div#button-block div.btn-group {
+    width: 145px;
 }
 
 .info-static, .info-dynamic {
