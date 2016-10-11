@@ -1,10 +1,9 @@
-from flask_user import login_required, SQLAlchemyAdapter, UserManager, current_user
 from flask import render_template, jsonify, url_for, request, redirect
+from flask_user import login_required, current_user
 from werkzeug import secure_filename
 from os import path, listdir, mkdir
-from __init__ import app, db
+from model import app, db, User
 from csv import DictReader
-from model import User
 import bayes as bs
 
 @app.route('/')
@@ -78,6 +77,4 @@ def model():
     return jsonify(results)
 
 if __name__ == '__main__':
-    db_adapter = SQLAlchemyAdapter(db, User)
-    user_manager = UserManager(db_adapter, app)
     app.run(debug=True)

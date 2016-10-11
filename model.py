@@ -1,5 +1,15 @@
-from flask_user import UserMixin
-from __init__ import db
+from flask_user import login_required, SQLAlchemyAdapter, UserManager, UserMixin
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask import Flask
+
+app = Flask(__name__, static_url_path='')
+app.config.from_object('config')
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+db = SQLAlchemy(app)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -19,3 +29,6 @@ class UserRoles(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id', ondelete='CASCADE'))
     role_id = db.Column(db.Integer(), db.ForeignKey('role.id', ondelete='CASCADE'))
+
+db_adapter = SQLAlchemyAdapter(db, User)
+user_manager = UserManager(db_adapter, app)
