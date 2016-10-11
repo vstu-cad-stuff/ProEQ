@@ -1,10 +1,13 @@
 from flask_user import login_required, SQLAlchemyAdapter, UserManager, UserMixin
+from werkzeug.contrib.fixers import ProxyFix
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask import Flask
 
 app = Flask(__name__, static_url_path='')
 app.config.from_object('config')
+
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

@@ -1,7 +1,10 @@
 server {
-    listen 80;
+    listen 4040;
     server_name example.org;
     charset utf-8;
+
+    access_log  /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log;
 
     client_max_body_size 32m;
 
@@ -10,9 +13,12 @@ server {
     }
 
     location / {
-        proxy_pass http://web:8000;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        if (!-f $request_filename) {
+            proxy_pass http://web:8000;
+            break;
+        }
     }
 }
