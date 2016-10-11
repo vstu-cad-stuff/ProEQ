@@ -21,24 +21,6 @@ $ docker-compose up -d
 $ docker-compose run web /usr/local/bin/python create_demo.py
 ```
 
-### Изменяем лимит на загрузку
-
-Находим `id` контейнера и заходим в него
-```bash
-$ docker exec -i -t <<контейнер с nginx>>
-```
-
-Правим файл с конфигурацией и обновляем nginx
-```bash
-container# vi /etc/nginx/sites-enabled/flask_project
-server {
-    ...
-    client_max_body_size 32m;
-    ...
-}
-container# /etc/init.d/nginx reload
-```
-
 ### Остановка сервиса
 Для остановки работы контейнеров выполните следующую команду в директории с проектом
 ```bash
